@@ -18,7 +18,7 @@ ASSETS = {
 }
 
 RISK_KEYS = [k for k, v in ASSETS.items() if v["bucket"] == "RISK"]
-SAFE_KEY = [k for k, v in ASSETS.items() if v["bucket"] == "SAFE"][0]
+SAFE_KEYS = [k for k, v in ASSETS.items() if v["bucket"] == "SAFE"]
 
 START = "2010-01-01"
 LOOKBACK_MONTHS = 12
@@ -54,10 +54,10 @@ def download_monthly_prices(yahoo_tickers: list[str], start: str) -> pd.DataFram
         auto_adjust=True,
         progress=False,
         group_by="ticker",
-        threads=False,  # <<< kluczowe: bez wątków = mniej locków sqlite
+        threads=False,  # <<< critical: no threads = fewer sqlite locks
     )
 
-    # Normalizacja formatu
+    # Format normalization
     if len(yahoo_tickers) == 1:
         close = data["Close"].to_frame(yahoo_tickers[0])
     else:
@@ -71,7 +71,7 @@ def download_monthly_prices(yahoo_tickers: list[str], start: str) -> pd.DataFram
 
     close = close.dropna(how="all")
 
-    # ME = month end (zamiast deprecated 'M')
+    # ME = month end (instead of deprecated 'M')
     monthly = close.resample("ME").last().dropna(how="all")
     return monthly
 
@@ -91,34 +91,42 @@ def build_signals(prices_m: pd.DataFrame) -> pd.DataFrame:
     mom = momentum(prices_m, LOOKBACK_MONTHS, USE_12_1_MOMENTUM)
 
     risk_cols = [ASSETS[k]["yahoo"] for k in RISK_KEYS]
-    safe_col = ASSETS[SAFE_KEY]["yahoo"]
+    safe_cols = [ASSETS[k]["yahoo"] for k in SAFE_KEYS]
 
-    # zabezpieczenie: zostaw tylko kolumny, które faktycznie istnieją
+    # safety check: keep only columns that actually exist
     risk_cols = [c for c in risk_cols if c in mom.columns]
-    if safe_col not in mom.columns:
-        raise RuntimeError(f"Brak danych dla SAFE ETF: {safe_col}")
+    safe_cols = [c for c in safe_cols if c in mom.columns]
 
-    # usuń wiersze, gdzie wszystkie risk są NA (unikamy idxmax warning/ValueError)
+    if not safe_cols:
+        raise RuntimeError(f"Missing data for SAFE ETFs")
+
+    # remove rows where all risk are NA (avoid idxmax warning/ValueError)
     mom_risk = mom[risk_cols].dropna(how="all")
+    mom_safe = mom[safe_cols].dropna(how="all")
 
     best_risk = mom_risk.idxmax(axis=1, skipna=True)
     best_risk_mom = mom_risk.max(axis=1, skipna=True)
 
+    best_safe = mom_safe.idxmax(axis=1, skipna=True)
+    best_safe_mom = mom_safe.max(axis=1, skipna=True)
+
     out = pd.DataFrame(index=mom.index)
     out["best_risk_yahoo"] = best_risk
     out["best_risk_mom"] = best_risk_mom
+    out["best_safe_yahoo"] = best_safe
+    out["best_safe_mom"] = best_safe_mom
 
-    # absolutny filtr: jeśli best_risk_mom <= 0 -> safe
+    # absolute filter: if best_risk_mom <= 0 -> select best safe
     out["choice_yahoo"] = np.where(
-        out["best_risk_mom"] > 0, out["best_risk_yahoo"], safe_col
+        out["best_risk_mom"] > 0, out["best_risk_yahoo"], out["best_safe_yahoo"]
     )
 
-    # do podglądu
+    # for viewing
     for c in mom.columns:
         out[f"mom_{c}"] = mom[c]
 
-    # usuń okres bez lookback
-    needed = [f"mom_{safe_col}"] + [f"mom_{c}" for c in risk_cols]
+    # remove period without lookback
+    needed = [f"mom_{c}" for c in safe_cols] + [f"mom_{c}" for c in risk_cols]
     out = out.dropna(subset=needed)
     return out
 
@@ -126,10 +134,10 @@ def build_signals(prices_m: pd.DataFrame) -> pd.DataFrame:
 def backtest(
     prices_m: pd.DataFrame, signals: pd.DataFrame, cost_bps: float = 0
 ) -> pd.DataFrame:
-    # pct_change: bez deprecated fill_method
+    # pct_change: without deprecated fill_method
     rets = prices_m.pct_change(fill_method=None).dropna(how="all")
 
-    # sygnał z końca miesiąca t obowiązuje w miesiącu t+1
+    # signal from end of month t applies in month t+1
     choice_next = signals["choice_yahoo"].shift(1).reindex(rets.index)
 
     port_ret = []
@@ -223,12 +231,12 @@ def main():
     yahoo_tickers = [v["yahoo"] for v in ASSETS.values()]
     prices_m = download_monthly_prices(yahoo_tickers, START)
 
-    # sanity check: co się pobrało?
+    # sanity check: what was downloaded?
     print("[info] downloaded columns:", list(prices_m.columns))
     missing = [t for t in yahoo_tickers if t not in prices_m.columns]
     if missing:
         raise RuntimeError(
-            f"Brakuje danych dla tickerów: {missing} (sprawdź symbol na Yahoo Finance)"
+            f"Missing data for tickers: {missing} (check symbol on Yahoo Finance)"
         )
 
     signals = build_signals(prices_m)
@@ -236,7 +244,7 @@ def main():
     stats = perf_stats(bt)
 
     print("\n=== PERFORMANCE ===")
-    # ładny print: %
+    # nice print: %
     printable = stats.copy()
     for k in [
         "CAGR",
@@ -249,7 +257,7 @@ def main():
         printable[k] = (printable[k] * 100) if pd.notna(printable[k]) else printable[k]
     print(printable)
 
-    # Ostatnie decyzje (XTB)
+    # Last decisions (XTB)
     yahoo_to_xtb = {v["yahoo"]: v["xtb"] for v in ASSETS.values()}
     tail = bt[["choice_yahoo", "port_ret"]].tail(24).copy()
     tail["choice_xtb"] = tail["choice_yahoo"].map(yahoo_to_xtb)

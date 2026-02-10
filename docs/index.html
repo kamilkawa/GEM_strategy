@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GEM Dashboard - Global Equity Momentum Strategy</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -13,10 +14,10 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
+            background: #f8f9fa;
+            color: #212529;
             padding: 20px;
-            min-height: 100vh;
+            line-height: 1.6;
         }
 
         .container {
@@ -26,82 +27,127 @@
 
         .header {
             text-align: center;
-            color: white;
             margin-bottom: 40px;
+            padding: 40px 20px;
         }
 
         .header h1 {
             font-size: 2.5rem;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            color: #212529;
+            font-weight: 700;
         }
 
         .header p {
             font-size: 1.1rem;
-            opacity: 0.9;
+            color: #6c757d;
         }
 
         .card {
             background: white;
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
         }
 
         .card h2 {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             margin-bottom: 16px;
-            color: #333;
+            color: #212529;
+            font-weight: 600;
         }
 
         .signal-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: white;
+            border: 2px solid #dee2e6;
             padding: 32px;
-            border-radius: 12px;
+            border-radius: 8px;
             text-align: center;
             margin-bottom: 24px;
         }
 
         .signal-box.risk-on {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border-color: #28a745;
+            background: #f8fff9;
         }
 
         .signal-box.risk-off {
-            background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+            border-color: #dc3545;
+            background: #fff8f8;
         }
 
         .signal-mode {
-            font-size: 1rem;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.9;
+            letter-spacing: 1.5px;
+            color: #6c757d;
             margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .signal-box.risk-on .signal-mode {
+            color: #28a745;
+        }
+
+        .signal-box.risk-off .signal-mode {
+            color: #dc3545;
         }
 
         .signal-choice {
             font-size: 3rem;
-            font-weight: bold;
+            font-weight: 700;
             margin: 16px 0;
+            color: #212529;
         }
 
         .signal-name {
-            font-size: 1.2rem;
-            opacity: 0.95;
+            font-size: 1.1rem;
+            color: #495057;
             margin-bottom: 4px;
         }
 
         .signal-xtb {
-            font-size: 1rem;
-            opacity: 0.8;
+            font-size: 0.95rem;
+            color: #6c757d;
         }
 
         .updated-time {
             text-align: center;
-            color: white;
-            font-size: 0.9rem;
+            color: #6c757d;
+            font-size: 0.875rem;
             margin-bottom: 20px;
-            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .stat-value.positive {
+            color: #28a745;
         }
 
         .momentum-table {
@@ -111,92 +157,108 @@
         }
 
         .momentum-table th {
-            background: #f7fafc;
+            background: #f8f9fa;
             padding: 12px;
             text-align: left;
             font-weight: 600;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 0.875rem;
+            color: #495057;
         }
 
         .momentum-table td {
             padding: 12px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.9rem;
         }
 
         .momentum-positive {
-            color: #38a169;
+            color: #28a745;
             font-weight: 600;
         }
 
         .momentum-negative {
-            color: #e53e3e;
+            color: #dc3545;
             font-weight: 600;
         }
 
         .badge {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
             font-weight: 600;
         }
 
         .badge-risk {
-            background: #fee;
+            background: #fff5f5;
             color: #c53030;
+            border: 1px solid #feb2b2;
         }
 
         .badge-safe {
-            background: #e6fffa;
-            color: #234e52;
+            background: #f0f9ff;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
         }
 
         .history-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 16px;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
         }
 
         .history-table th {
-            background: #f7fafc;
+            background: #f8f9fa;
             padding: 10px;
             text-align: left;
             font-weight: 600;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid #dee2e6;
+            color: #495057;
         }
 
         .history-table td {
             padding: 10px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .mode-risk-on {
-            color: #38a169;
+            color: #28a745;
             font-weight: 600;
         }
 
         .mode-risk-off {
-            color: #e53e3e;
+            color: #dc3545;
             font-weight: 600;
         }
 
         .loading {
             text-align: center;
             padding: 40px;
-            color: #666;
+            color: #6c757d;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-top: 16px;
         }
 
         .footer {
             text-align: center;
-            color: white;
+            color: #6c757d;
             margin-top: 40px;
-            opacity: 0.8;
-            font-size: 0.9rem;
+            padding: 20px;
+            font-size: 0.875rem;
         }
 
         .footer a {
-            color: white;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
             text-decoration: underline;
         }
 
@@ -212,14 +274,18 @@
             .card {
                 padding: 16px;
             }
+
+            .chart-container {
+                height: 300px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📊 GEM Dashboard</h1>
-            <p>Global Equity Momentum Strategy Tracker</p>
+            <h1>GEM Dashboard</h1>
+            <p>Global Equity Momentum Strategy</p>
         </div>
 
         <div id="updated-time" class="updated-time"></div>
@@ -228,9 +294,32 @@
             <div class="loading">Loading current signal...</div>
         </div>
 
+        <div id="stats-grid" class="stats-grid" style="display: none;">
+            <div class="stat-item">
+                <div class="stat-label">Total Return</div>
+                <div id="stat-total-return" class="stat-value positive">-</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">CAGR</div>
+                <div id="stat-cagr" class="stat-value positive">-</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Backtest Period</div>
+                <div id="stat-months" class="stat-value">-</div>
+            </div>
+        </div>
+
         <div class="card">
-            <h2>📈 Momentum Analysis (12-Month)</h2>
-            <p style="color: #666; margin-bottom: 16px;">Assets ranked by momentum</p>
+            <h2>📈 Equity Curve</h2>
+            <p style="color: #6c757d; margin-bottom: 16px; font-size: 0.875rem;">Historical performance (backtested)</p>
+            <div class="chart-container">
+                <canvas id="equityChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Momentum Analysis</h2>
+            <p style="color: #6c757d; margin-bottom: 16px; font-size: 0.875rem;">12-month momentum for all assets</p>
             <div style="overflow-x: auto;">
                 <table class="momentum-table">
                     <thead>
@@ -250,8 +339,8 @@
         </div>
 
         <div class="card">
-            <h2>📜 Signal History (Last 12 Months)</h2>
-            <p style="color: #666; margin-bottom: 16px;">Recent allocation decisions</p>
+            <h2>Signal History</h2>
+            <p style="color: #6c757d; margin-bottom: 16px; font-size: 0.875rem;">Last 12 months</p>
             <div style="overflow-x: auto;">
                 <table class="history-table">
                     <thead>
@@ -270,11 +359,13 @@
         </div>
 
         <div class="footer">
-            <p>Powered by <a href="https://github.com/yourusername/GEM" target="_blank">GEM Strategy</a> | Updates automatically via GitHub Actions</p>
+            <p>Powered by <a href="https://github.com/kamilkawa/GEM_strategy" target="_blank">GEM Strategy</a> | Updates automatically via GitHub Actions</p>
         </div>
     </div>
 
     <script>
+        let equityChart = null;
+
         async function loadDashboard() {
             try {
                 const response = await fetch('data.json');
@@ -283,7 +374,7 @@
                 // Update time
                 const updatedDate = new Date(data.updated);
                 document.getElementById('updated-time').textContent = 
-                    `Last updated: ${updatedDate.toLocaleString()} | Data as of: ${data.last_data_date}`;
+                    `Last updated: ${updatedDate.toLocaleDateString()} ${updatedDate.toLocaleTimeString()} | Data as of: ${data.last_data_date}`;
                 
                 // Current signal
                 const signal = data.current_signal;
@@ -295,6 +386,93 @@
                     <div class="signal-name">${signal.name}</div>
                     <div class="signal-xtb">XTB: ${signal.xtb_ticker}</div>
                 `;
+                
+                // Performance stats
+                if (data.performance) {
+                    document.getElementById('stats-grid').style.display = 'grid';
+                    document.getElementById('stat-total-return').textContent = 
+                        `${(data.performance.total_return * 100).toFixed(1)}%`;
+                    document.getElementById('stat-cagr').textContent = 
+                        `${(data.performance.cagr * 100).toFixed(1)}%`;
+                    document.getElementById('stat-months').textContent = 
+                        `${data.performance.months} months`;
+                }
+                
+                // Equity curve chart
+                if (data.equity_curve && data.equity_curve.length > 0) {
+                    const dates = data.equity_curve.map(d => d.date);
+                    const equity = data.equity_curve.map(d => d.equity);
+                    
+                    const ctx = document.getElementById('equityChart').getContext('2d');
+                    
+                    if (equityChart) {
+                        equityChart.destroy();
+                    }
+                    
+                    equityChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: dates,
+                            datasets: [{
+                                label: 'Portfolio Value',
+                                data: equity,
+                                borderColor: '#28a745',
+                                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.1,
+                                pointRadius: 0,
+                                pointHoverRadius: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                    callbacks: {
+                                        label: function(context) {
+                                            return `Value: ${context.parsed.y.toFixed(2)}`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        maxTicksLimit: 12,
+                                        color: '#6c757d'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: false,
+                                    grid: {
+                                        color: '#e9ecef'
+                                    },
+                                    ticks: {
+                                        color: '#6c757d',
+                                        callback: function(value) {
+                                            return value.toFixed(1);
+                                        }
+                                    }
+                                }
+                            },
+                            interaction: {
+                                mode: 'nearest',
+                                axis: 'x',
+                                intersect: false
+                            }
+                        }
+                    });
+                }
                 
                 // Momentum table
                 const momentumTbody = document.getElementById('momentum-tbody');

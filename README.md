@@ -5,8 +5,8 @@ A Python implementation of the Global Equities Momentum (GEM) investment strateg
 ## 📋 Overview
 
 The GEM strategy uses a **12-1 momentum** calculation to:
-- **Risk-On Mode**: When momentum is positive, invest in the equity ETF with the highest momentum
-- **Risk-Off Mode**: When all equity ETFs have negative momentum, switch to a safe bond ETF
+- **Risk-On Mode**: When best equity momentum is positive, invest in the equity ETF with the highest momentum
+- **Risk-Off Mode**: When all equity ETFs have negative momentum, switch to the bond ETF with the highest momentum (IB01 vs CBU0)
 
 ### Supported ETFs
 
@@ -17,8 +17,8 @@ The strategy tracks the following ETFs traded on London Stock Exchange (availabl
 | CNDX | CNDX.UK | NASDAQ 100 ETF | RISK |
 | ISAC | ISAC | MSCI All Country World ETF | RISK |
 | EIMI | EIMI.UK | MSCI Emerging Markets ETF | RISK |
-| IB01 | IB01.UK | Treasury Bond 0-1yr ETF | SAFE (used in strategy) |
-| CBU0 | CBU0.UK | Long-term US Treasury Bonds ETF | SAFE (tracked) |
+| IB01 | IB01.UK | Treasury Bond 0-1yr ETF | SAFE |
+| CBU0 | CBU0.UK | Long-term US Treasury Bonds ETF | SAFE |
 
 ## 🚀 Features
 
@@ -58,7 +58,7 @@ pip install -r requirements.txt
 
 Simply visit your GitHub Pages URL to see the current signal without running any code:
 
-`https://yourusername.github.io/GEM/`
+**[https://kamilkawa.github.io/GEM_strategy/](https://kamilkawa.github.io/GEM_strategy/)**
 
 The dashboard shows:
 - Current allocation signal (RISK-ON/RISK-OFF)
@@ -155,23 +155,19 @@ if max(momentum_risk_assets) > 0:
     # RISK-ON: Pick the risk asset with highest momentum
     hold = argmax(momentum_risk_assets)
 else:
-    # RISK-OFF: Switch to safe asset
-    hold = SAFE_ASSET
+    # RISK-OFF: Pick the safe asset with highest momentum
+    hold = argmax(momentum_safe_assets)  # IB01 vs CBU0
 ```
 
 ## 🌐 Live Dashboard
 
 You can view your GEM strategy signals on a live dashboard hosted on GitHub Pages!
 
-### Setup GitHub Pages Dashboard
+### Live Dashboard
 
-1. **Push your repository to GitHub**
-2. **Enable GitHub Pages**:
-   - Go to repository Settings → Pages
-   - Source: Deploy from a branch
-   - Branch: `main` → `/docs` folder
-   - Save
-3. **Your dashboard will be live at**: `https://yourusername.github.io/GEM/`
+View the dashboard at: **[https://kamilkawa.github.io/GEM_strategy/](https://kamilkawa.github.io/GEM_strategy/)**
+
+The dashboard is automatically updated on the 1st of every month via GitHub Actions.
 
 ### Automatic Updates
 

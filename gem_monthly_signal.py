@@ -9,7 +9,7 @@ import pandas as pd
 import yfinance as yf
 
 
-# ====== KONFIGURACJA: Twoje ETFy ======
+# ====== CONFIGURATION: Your ETFs ======
 ASSETS = {
     # key: {yahoo symbol, xtb symbol, role}
     "CNDX": {"yahoo": "CNDX.L", "xtb": "CNDX.UK", "role": "RISK"},
@@ -21,7 +21,7 @@ ASSETS = {
 
 LOOKBACK_MONTHS = 12
 USE_12_1_MOMENTUM = True
-START = "2008-01-01"  # wystarczy dużo wcześniej niż 12 mies.
+START = "2008-01-01"  # far enough back for 12-month lookback
 
 
 def configure_yfinance_cache() -> str:
@@ -66,7 +66,7 @@ def momentum_12_1(prices_m: pd.DataFrame, lookback: int) -> pd.Series:
       mom(t) = P(t-1)/P(t-12) - 1
     """
     if prices_m.shape[0] < lookback + 1:
-        raise RuntimeError("Za mało danych do policzenia 12-1 momentum.")
+        raise RuntimeError("Not enough data to calculate 12-1 momentum.")
 
     p_t1 = prices_m.iloc[-2]  # t-1
     p_t12 = prices_m.iloc[-(lookback + 1)]  # t-12
@@ -78,7 +78,6 @@ def main():
 
     risk_keys = [k for k, v in ASSETS.items() if v["role"] == "RISK"]
     safe_keys = [k for k, v in ASSETS.items() if v["role"] == "SAFE"]
-    safe_key = safe_keys[0]  # primary SAFE asset for strategy
 
     yahoo_map = {k: v["yahoo"] for k, v in ASSETS.items()}
     xtb_map = {v["yahoo"]: v["xtb"] for v in ASSETS.values()}
@@ -89,28 +88,33 @@ def main():
     # sanity check
     missing = [t for t in yahoo_tickers if t not in prices_m.columns]
     if missing:
-        raise RuntimeError(f"Brakuje danych dla: {missing}. Sprawdź tickery Yahoo.")
+        raise RuntimeError(f"Missing data for: {missing}. Check Yahoo Finance tickers.")
 
     # compute latest momentum
     mom = momentum_12_1(prices_m, LOOKBACK_MONTHS)
 
-    # only risk assets participate in 'winner'
+    # risk assets compete for selection
     risk_cols = [yahoo_map[k] for k in risk_keys]
     mom_risk = mom[risk_cols].dropna()
 
-    best_ticker = mom_risk.idxmax()
-    best_value = mom_risk.max()
+    best_risk_ticker = mom_risk.idxmax()
+    best_risk_value = mom_risk.max()
 
-    safe_ticker = yahoo_map[safe_key]
+    # safe assets compete for selection
+    safe_cols = [yahoo_map[k] for k in safe_keys]
+    mom_safe = mom[safe_cols].dropna()
 
-    if best_value > 0:
-        choice = best_ticker
+    best_safe_ticker = mom_safe.idxmax()
+    best_safe_value = mom_safe.max()
+
+    if best_risk_value > 0:
+        choice = best_risk_ticker
         mode = "RISK-ON"
-        reason = f"Najlepsze momentum > 0 (winner {best_value:.2%})"
+        reason = f"Best RISK momentum > 0 (winner {best_risk_value:.2%})"
     else:
-        choice = safe_ticker
+        choice = best_safe_ticker
         mode = "RISK-OFF"
-        reason = f"Wszystkie momentum ≤ 0 (best {best_value:.2%})"
+        reason = f"All RISK momentum ≤ 0, selected best SAFE ({best_safe_value:.2%})"
 
     # month label: decision for next month after last completed month
     last_month_end = prices_m.index[-1].date()
@@ -120,28 +124,28 @@ def main():
     # momentum is based on t-1 and t-12, but computed at month-end t; practical: trade at start of next month.
 
     print("\n=== GEM MONTHLY SIGNAL ===")
-    print(f"Data (ostatni month-end): {last_month_end} | cache: {cache_dir}")
+    print(f"Data (last month-end): {last_month_end} | cache: {cache_dir}")
     print(
-        f"Momentum model: 12{'-1' if USE_12_1_MOMENTUM else '-0'} | Lookback: {LOOKBACK_MONTHS} miesięcy"
+        f"Momentum model: 12{'-1' if USE_12_1_MOMENTUM else '-0'} | Lookback: {LOOKBACK_MONTHS} months"
     )
-    print("\n--- Momentum 12-1 (dla ETF akcyjnych) ---")
+    print("\n--- Momentum 12-1 (for equity ETFs) ---")
     for k in risk_keys:
         y = yahoo_map[k]
         print(f"{k:5s}  ({y:7s})  momentum: {mom[y]*100:8.2f}%")
 
-    print("\n--- Decyzja ---")
-    print(f"Tryb: {mode}")
-    print(f"Wybrany ETF (Yahoo): {choice}")
-    print(f"Wybrany ETF (XTB):  {xtb_map.get(choice, 'N/A')}")
-    print(f"Uzasadnienie: {reason}")
+    print("\n--- Decision ---")
+    print(f"Mode: {mode}")
+    print(f"Selected ETF (Yahoo): {choice}")
+    print(f"Selected ETF (XTB):  {xtb_map.get(choice, 'N/A')}")
+    print(f"Reason: {reason}")
 
-    print("\n--- Dodatkowo: momentum SAFE assets ---")
+    print("\n--- Momentum SAFE assets (compete in RISK-OFF) ---")
     for k in safe_keys:
         y = yahoo_map[k]
-        is_primary = " (używany w strategii)" if k == safe_key else ""
-        print(f"{k:5s} ({y:7s}) momentum: {mom[y]*100:8.2f}%{is_primary}")
+        is_chosen = " ✓ (selected)" if y == choice and mode == "RISK-OFF" else ""
+        print(f"{k:5s} ({y:7s}) momentum: {mom[y]*100:8.2f}%{is_chosen}")
     print(
-        "\nUwaga: sygnał liczysz na koniec miesiąca, transakcję robisz na początku kolejnego miesiąca.\n"
+        "\nNote: Signal calculated at month-end, execute trade at start of next month.\n"
     )
 
 
