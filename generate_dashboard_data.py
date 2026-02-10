@@ -245,11 +245,20 @@ def main():
 
     # Backtest for equity curve
     bt = backtest(prices_m, signals)
+
+    # Calculate drawdown
+    peak = bt["equity"].cummax()
+    bt["drawdown"] = (bt["equity"] / peak - 1) * 100  # as percentage
+
     equity_curve = []
+    drawdown_curve = []
 
     for date, row in bt.iterrows():
         equity_curve.append(
             {"date": date.strftime("%Y-%m-%d"), "equity": float(row["equity"])}
+        )
+        drawdown_curve.append(
+            {"date": date.strftime("%Y-%m-%d"), "drawdown": float(row["drawdown"])}
         )
 
     # Performance stats
@@ -257,6 +266,7 @@ def main():
     years = n_months / 12.0
     total_return = bt["equity"].iloc[-1] - 1
     cagr = (bt["equity"].iloc[-1] ** (1 / years) - 1) if years > 0 else 0
+    max_drawdown = bt["drawdown"].min()
 
     # Prepare output data
     output = {
@@ -274,9 +284,11 @@ def main():
         "momentum": momentum_data,
         "history": history,
         "equity_curve": equity_curve,
+        "drawdown_curve": drawdown_curve,
         "performance": {
             "total_return": float(total_return),
             "cagr": float(cagr),
+            "max_drawdown": float(max_drawdown),
             "months": int(n_months),
         },
         "config": {"lookback_months": LOOKBACK_MONTHS, "use_12_1": USE_12_1_MOMENTUM},
