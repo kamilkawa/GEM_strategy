@@ -1,0 +1,275 @@
+{
+  "updated": "2026-02-10T10:22:00.236975",
+  "last_data_date": "2026-02-28",
+  "current_signal": {
+    "mode": "RISK-ON",
+    "choice": "EIMI",
+    "xtb_ticker": "EIMI.UK",
+    "name": "MSCI EM",
+    "best_momentum": 0.4120545323767886
+  },
+  "momentum": [
+    {
+      "symbol": "EIMI",
+      "xtb_ticker": "EIMI.UK",
+      "name": "MSCI EM",
+      "momentum": 0.4120545323767886,
+      "price": 49.72999954223633,
+      "role": "RISK"
+    },
+    {
+      "symbol": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "name": "NASDAQ 100",
+      "momentum": 0.24758608004792326,
+      "price": 1448.800048828125,
+      "role": "RISK"
+    },
+    {
+      "symbol": "ISAC",
+      "xtb_ticker": "ISAC",
+      "name": "MSCI ACWI",
+      "momentum": 0.2350795297736521,
+      "price": 113.36000061035156,
+      "role": "RISK"
+    },
+    {
+      "symbol": "CBU0",
+      "xtb_ticker": "CBU0.UK",
+      "name": "US Treasury 20+yr",
+      "momentum": 0.0463854335173266,
+      "price": 155.13999938964844,
+      "role": "SAFE"
+    },
+    {
+      "symbol": "IB01",
+      "xtb_ticker": "IB01.UK",
+      "name": "US Treasury 0-1yr",
+      "momentum": 0.03868939290137896,
+      "price": 119.27999877929688,
+      "role": "SAFE"
+    }
+  ],
+  "history": [
+    {
+      "date": "2023-03-31",
+      "choice": "IB01",
+      "xtb_ticker": "IB01.UK",
+      "mode": "RISK-OFF"
+    },
+    {
+      "date": "2023-04-30",
+      "choice": "IB01",
+      "xtb_ticker": "IB01.UK",
+      "mode": "RISK-OFF"
+    },
+    {
+      "date": "2023-05-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2023-06-30",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2023-07-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2023-08-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2023-09-30",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2023-10-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2023-11-30",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2023-12-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2024-01-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2024-02-29",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2024-03-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2024-04-30",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2024-05-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2024-06-30",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2024-07-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2024-08-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2024-09-30",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2024-10-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2024-11-30",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2024-12-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2025-01-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2025-02-28",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2025-03-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2025-04-30",
+      "choice": "ISAC",
+      "xtb_ticker": "ISAC",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2025-05-31",
+      "choice": "ISAC",
+      "xtb_ticker": "ISAC",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2025-06-30",
+      "choice": "ISAC",
+      "xtb_ticker": "ISAC",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2025-07-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2025-08-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2025-09-30",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2025-10-31",
+      "choice": "CNDX",
+      "xtb_ticker": "CNDX.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2025-11-30",
+      "choice": "EIMI",
+      "xtb_ticker": "EIMI.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2025-12-31",
+      "choice": "EIMI",
+      "xtb_ticker": "EIMI.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2026-01-31",
+      "choice": "EIMI",
+      "xtb_ticker": "EIMI.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2026-02-28",
+      "choice": "EIMI",
+      "xtb_ticker": "EIMI.UK",
+      "mode": "RISK-ON"
+    }
+  ],
+  "config": {
+    "lookback_months": 12,
+    "use_12_1": true
+  }
+}
