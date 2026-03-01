@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-10T11:55:01.551125",
+  "updated": "2026-03-01T08:50:23.908308",
   "last_data_date": "2026-02-28",
   "current_signal": {
     "mode": "RISK-ON",
@@ -14,7 +14,7 @@
       "xtb_ticker": "EIMI.UK",
       "name": "MSCI EM",
       "momentum": 0.4120545323767886,
-      "price": 49.7599983215332,
+      "price": 51.2599983215332,
       "role": "RISK"
     },
     {
@@ -22,7 +22,7 @@
       "xtb_ticker": "CNDX.UK",
       "name": "NASDAQ 100",
       "momentum": 0.24758608004792326,
-      "price": 1449.5999755859375,
+      "price": 1432.0,
       "role": "RISK"
     },
     {
@@ -30,7 +30,7 @@
       "xtb_ticker": "ISAC",
       "name": "MSCI ACWI",
       "momentum": 0.2350795297736521,
-      "price": 113.33999633789062,
+      "price": 113.23999786376953,
       "role": "RISK"
     },
     {
@@ -38,7 +38,7 @@
       "xtb_ticker": "CBU0.UK",
       "name": "US Treasury 20+yr",
       "momentum": 0.0463854335173266,
-      "price": 155.13999938964844,
+      "price": 157.9199981689453,
       "role": "SAFE"
     },
     {
@@ -46,7 +46,7 @@
       "xtb_ticker": "IB01.UK",
       "name": "US Treasury 0-1yr",
       "momentum": 0.03868939290137896,
-      "price": 119.27999877929688,
+      "price": 119.5,
       "role": "SAFE"
     }
   ],
@@ -555,7 +555,7 @@
     },
     {
       "date": "2026-02-28",
-      "equity": 2.6936688808700127
+      "equity": 2.774868709197911
     }
   ],
   "drawdown_curve": [
@@ -849,8 +849,8 @@
     }
   ],
   "performance": {
-    "total_return": 1.6936688808700127,
-    "cagr": 0.1795708588988154,
+    "total_return": 1.7748687091979112,
+    "cagr": 0.18542406620522134,
     "max_drawdown": -23.251111306881135,
     "months": 72
   },
