@@ -1,62 +1,56 @@
 {
-  "updated": "2026-09-02T12:48:21.525299",
-  "last_data_date": "2026-09-30",
+  "updated": "2026-10-02T14:46:30.251571",
+  "last_data_date": "2026-10-31",
   "current_signal": {
     "mode": "RISK-ON",
     "choice": "EIMI",
     "xtb_ticker": "EIMI.UK",
     "name": "MSCI EM",
-    "best_momentum": 0.2838620635808218
+    "best_momentum": 0.22458098853766595
   },
   "momentum": [
     {
       "symbol": "EIMI",
       "xtb_ticker": "EIMI.UK",
       "name": "MSCI EM",
-      "momentum": 0.2838620635808218,
-      "price": 54.720001220703125,
+      "momentum": 0.22458098853766595,
+      "price": 55.52000045776367,
       "role": "RISK"
     },
     {
       "symbol": "CNDX",
       "xtb_ticker": "CNDX.UK",
       "name": "NASDAQ 100",
-      "momentum": 0.2117295839269353,
-      "price": 1668.199951171875,
+      "momentum": 0.18447652461647213,
+      "price": 1780.5999755859375,
       "role": "RISK"
     },
     {
       "symbol": "ISAC",
       "xtb_ticker": "ISAC",
       "name": "MSCI ACWI",
-      "momentum": 0.19616083559467046,
-      "price": 123.22000122070312,
+      "momentum": 0.14861345018390848,
+      "price": 123.86000061035156,
       "role": "RISK"
     },
     {
       "symbol": "IB01",
       "xtb_ticker": "IB01.UK",
       "name": "US Treasury 0-1yr",
-      "momentum": 0.03382624174454918,
-      "price": 121.68000030517578,
+      "momentum": 0.03286468713407209,
+      "price": 122.02279663085938,
       "role": "SAFE"
     },
     {
       "symbol": "CBU0",
       "xtb_ticker": "CBU0.UK",
       "name": "US Treasury 20+yr",
-      "momentum": -0.0008482082546392711,
-      "price": 152.35000610351562,
+      "momentum": -0.04154501154487589,
+      "price": 148.36000061035156,
       "role": "SAFE"
     }
   ],
   "history": [
-    {
-      "date": "2023-10-31",
-      "choice": "CNDX",
-      "xtb_ticker": "CNDX.UK",
-      "mode": "RISK-ON"
-    },
     {
       "date": "2023-11-30",
       "choice": "CNDX",
@@ -263,6 +257,12 @@
     },
     {
       "date": "2026-09-30",
+      "choice": "EIMI",
+      "xtb_ticker": "EIMI.UK",
+      "mode": "RISK-ON"
+    },
+    {
+      "date": "2026-10-31",
       "choice": "EIMI",
       "xtb_ticker": "EIMI.UK",
       "mode": "RISK-ON"
@@ -583,7 +583,11 @@
     },
     {
       "date": "2026-09-30",
-      "equity": 2.9621698034823303
+      "equity": 2.966500353612194
+    },
+    {
+      "date": "2026-10-31",
+      "equity": 3.0054763372901747
     }
   ],
   "drawdown_curve": [
@@ -901,14 +905,18 @@
     },
     {
       "date": "2026-09-30",
-      "drawdown": -2.442501209052972
+      "drawdown": -2.299876826560898
+    },
+    {
+      "date": "2026-10-31",
+      "drawdown": -1.0162233789866026
     }
   ],
   "performance": {
-    "total_return": 1.9621698034823303,
-    "cagr": 0.1793343669615346,
+    "total_return": 2.0054763372901747,
+    "cagr": 0.1794702659864975,
     "max_drawdown": -23.251111306881135,
-    "months": 79
+    "months": 80
   },
   "config": {
     "lookback_months": 12,
